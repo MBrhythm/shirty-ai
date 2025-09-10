@@ -1,6 +1,8 @@
 # Shirty AI 🎨
 
 **Turn your wildest ideas into stunning wearable art with the magic of AI**
+<img width="1011" height="383" alt="Screenshot 2025-09-10 at 10 57 57 PM" src="https://github.com/user-attachments/assets/3c755a27-382d-4351-a1a4-685f3bc64ebb" />
+
 
 Shirty AI is a modern web application that leverages AI to create custom t-shirt designs, hoodies, and sweatshirts. Simply describe your vision, choose your preferred art style, and let AI bring your creativity to life!
 
