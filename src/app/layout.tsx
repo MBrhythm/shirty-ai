@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shirty AI - AI-Powered T-Shirt Design",
-  description: "Create custom AI-powered designs for your apparel",
+  title: "MBprints Design Generator",
+  description: "Create your a design or upload your own",
 };
 
 export default function RootLayout({
