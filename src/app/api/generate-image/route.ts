@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         responseModalities: ['IMAGE', 'TEXT']
       }
 
-      const model = 'gemini-2.0-flash-preview-image-generation'
+      const model = 'gemini-3.1-flash-image-preview'
       const contents = [
         {
           role: 'user',
