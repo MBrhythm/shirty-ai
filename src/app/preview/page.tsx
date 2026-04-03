@@ -25,21 +25,21 @@ function PreviewPage() {
 
   const getColorData = () => {
     const colors = [
-      { id: 'white', name: 'White', bgClass: 'bg-white', textClass: 'text-gray-900' },
-      { id: 'black', name: 'Black', bgClass: 'bg-black', textClass: 'text-white' },
-      { id: 'navy', name: 'Navy', bgClass: 'bg-blue-900', textClass: 'text-white' },
-      { id: 'gray', name: 'Gray', bgClass: 'bg-gray-500', textClass: 'text-white' },
-      { id: 'red', name: 'Red', bgClass: 'bg-red-500', textClass: 'text-white' },
-      { id: 'blue', name: 'Blue', bgClass: 'bg-blue-500', textClass: 'text-white' },
-      { id: 'green', name: 'Green', bgClass: 'bg-green-500', textClass: 'text-white' },
-      { id: 'purple', name: 'Purple', bgClass: 'bg-purple-500', textClass: 'text-white' },
-      { id: 'yellow', name: 'Yellow', bgClass: 'bg-yellow-400', textClass: 'text-gray-900' },
-      { id: 'orange', name: 'Orange', bgClass: 'bg-orange-500', textClass: 'text-white' },
-      { id: 'pink', name: 'Pink', bgClass: 'bg-pink-500', textClass: 'text-white' },
-      { id: 'brown', name: 'Brown', bgClass: 'bg-amber-800', textClass: 'text-white' },
-      { id: 'maroon', name: 'Maroon', bgClass: 'bg-red-800', textClass: 'text-white' },
-      { id: 'forest', name: 'Forest', bgClass: 'bg-green-800', textClass: 'text-white' },
-      { id: 'teal', name: 'Teal', bgClass: 'bg-teal-500', textClass: 'text-white' },
+      { id: 'white', name: 'White', hex: '#FFFFFF', textClass: 'text-gray-900' },
+      { id: 'black', name: 'Black', hex: '#1A1A1A', textClass: 'text-white' },
+      { id: 'navy', name: 'Navy', hex: '#1E293B', textClass: 'text-white' },
+      { id: 'gray', name: 'Gray', hex: '#6B7280', textClass: 'text-white' },
+      { id: 'red', name: 'Red', hex: '#EF4444', textClass: 'text-white' },
+      { id: 'blue', name: 'Blue', hex: '#3B82F6', textClass: 'text-white' },
+      { id: 'green', name: 'Green', hex: '#10B981', textClass: 'text-white' },
+      { id: 'purple', name: 'Purple', hex: '#8B5CF6', textClass: 'text-white' },
+      { id: 'yellow', name: 'Yellow', hex: '#FBBF24', textClass: 'text-gray-900' },
+      { id: 'orange', name: 'Orange', hex: '#F97316', textClass: 'text-white' },
+      { id: 'pink', name: 'Pink', hex: '#EC4899', textClass: 'text-white' },
+      { id: 'brown', name: 'Brown', hex: '#78350F', textClass: 'text-white' },
+      { id: 'maroon', name: 'Maroon', hex: '#7F1D1D', textClass: 'text-white' },
+      { id: 'forest', name: 'Forest', hex: '#064E3B', textClass: 'text-white' },
+      { id: 'teal', name: 'Teal', hex: '#14B8A6', textClass: 'text-white' },
     ]
     return colors.find(c => c.id === state.color) || colors[0]
   }
@@ -52,8 +52,6 @@ function PreviewPage() {
     
     setIsSubmitting(true)
     
-    // Logic: Here we would typically send an email via an API route.
-    // For now, we simulate the business process.
     console.log("New MBprints Quote Request:", {
       customer: customerName,
       email: customerEmail,
@@ -135,17 +133,36 @@ function PreviewPage() {
           {/* Left Column - Product Preview */}
           <div className="space-y-6">
             <Card className="border-2 overflow-hidden">
-              <div 
-                className={`aspect-square ${selectedColorData?.bgClass} flex items-center justify-center relative shadow-inner`}
-              >
+              <div className="aspect-square bg-gray-100 flex items-center justify-center relative shadow-inner p-8">
+                
+                {/* 1. The Base Product Image (Colorized via CSS) */}
+                <div 
+                  className="absolute inset-0 m-8 opacity-90 transition-colors duration-300"
+                  style={{
+                    backgroundColor: selectedColorData.hex,
+                    maskImage: `url('https://cdn-icons-png.flaticon.com/512/863/863684.png')`,
+                    WebkitMaskImage: `url('https://cdn-icons-png.flaticon.com/512/863/863684.png')`,
+                    maskSize: 'contain',
+                    WebkitMaskSize: 'contain',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskPosition: 'center',
+                    WebkitMaskPosition: 'center',
+                  }}
+                />
+
+                {/* 2. The Uploaded Logo/Design Layered on Top */}
                 {state.design.imageUrl && (
-                  <img 
-                    src={state.design.imageUrl} 
-                    alt="MBprints Custom Design"
-                    className="w-4/5 h-4/5 object-contain drop-shadow-2xl"
-                  />
+                  <div className="relative z-10 w-1/3 h-1/3 flex items-center justify-center mt-12">
+                    <img 
+                      src={state.design.imageUrl} 
+                      alt="MBprints Custom Design"
+                      className="max-w-full max-h-full object-contain drop-shadow-md"
+                    />
+                  </div>
                 )}
-                <Badge className="absolute top-4 left-4 bg-white/90 text-black border shadow-sm">
+                
+                <Badge className="absolute top-4 left-4 bg-white/90 text-black border shadow-sm z-20">
                   {state.productType}
                 </Badge>
               </div>
@@ -237,26 +254,4 @@ function PreviewPage() {
 
             {/* MBprints Trust Info */}
             <div className="grid grid-cols-3 gap-4">
-               <div className="text-center p-3">
-                 <div className="text-xl mb-1">⚡</div>
-                 <div className="text-[10px] font-bold text-gray-400 uppercase">Fast Quote</div>
-               </div>
-               <div className="text-center p-3">
-                 <div className="text-xl mb-1">💎</div>
-                 <div className="text-[10px] font-bold text-gray-400 uppercase">Premium Print</div>
-               </div>
-               <div className="text-center p-3">
-                 <div className="text-xl mb-1">📦</div>
-                 <div className="text-[10px] font-bold text-gray-400 uppercase">Worldwide</div>
-               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default function Preview() {
-  return <PreviewPage />
-}
+               <div className
