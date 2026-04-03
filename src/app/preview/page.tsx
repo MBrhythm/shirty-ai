@@ -254,4 +254,26 @@ function PreviewPage() {
 
             {/* MBprints Trust Info */}
             <div className="grid grid-cols-3 gap-4">
-               <div className
+               <div className="text-center p-3">
+                 <div className="text-xl mb-1">⚡</div>
+                 <div className="text-[10px] font-bold text-gray-400 uppercase">Fast Quote</div>
+               </div>
+               <div className="text-center p-3">
+                 <div className="text-xl mb-1">💎</div>
+                 <div className="text-[10px] font-bold text-gray-400 uppercase">Premium Print</div>
+               </div>
+               <div className="text-center p-3">
+                 <div className="text-xl mb-1">📦</div>
+                 <div className="text-[10px] font-bold text-gray-400 uppercase">Worldwide</div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function Preview() {
+  return <PreviewPage />
+}
