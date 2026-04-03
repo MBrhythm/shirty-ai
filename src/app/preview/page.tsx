@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useApp } from '@/context/AppContext'
-import { Send, Check, RefreshCw, Heart, Share2, Palette, User, Mail, Hash } from 'lucide-react'
+import { Send, Check, RefreshCw, Palette, User, Mail, Hash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -32,6 +32,14 @@ function PreviewPage() {
       { id: 'red', name: 'Red', bgClass: 'bg-red-500', textClass: 'text-white' },
       { id: 'blue', name: 'Blue', bgClass: 'bg-blue-500', textClass: 'text-white' },
       { id: 'green', name: 'Green', bgClass: 'bg-green-500', textClass: 'text-white' },
+      { id: 'purple', name: 'Purple', bgClass: 'bg-purple-500', textClass: 'text-white' },
+      { id: 'yellow', name: 'Yellow', bgClass: 'bg-yellow-400', textClass: 'text-gray-900' },
+      { id: 'orange', name: 'Orange', bgClass: 'bg-orange-500', textClass: 'text-white' },
+      { id: 'pink', name: 'Pink', bgClass: 'bg-pink-500', textClass: 'text-white' },
+      { id: 'brown', name: 'Brown', bgClass: 'bg-amber-800', textClass: 'text-white' },
+      { id: 'maroon', name: 'Maroon', bgClass: 'bg-red-800', textClass: 'text-white' },
+      { id: 'forest', name: 'Forest', bgClass: 'bg-green-800', textClass: 'text-white' },
+      { id: 'teal', name: 'Teal', bgClass: 'bg-teal-500', textClass: 'text-white' },
     ]
     return colors.find(c => c.id === state.color) || colors[0]
   }
