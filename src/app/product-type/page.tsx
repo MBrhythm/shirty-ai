@@ -4,62 +4,11 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useApp } from '@/context/AppContext'
 import { ProductType } from '@/types'
-import { Star, Truck, Shield, Heart } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { NavigationHeader } from '@/components/navigation-header'
+import { Check } from 'lucide-react'
 
 function ProductTypeSelection() {
   const router = useRouter()
   const { state, dispatch } = useApp()
-
-  const productTypes = [
-    {
-      id: 'tshirt' as ProductType,
-      label: 'Classic T-Shirt',
-      description: 'Premium cotton blend, perfect for everyday wear',
-      image: '👕',
-      features: ['100% Cotton', 'Machine Washable', 'Pre-shrunk'],
-      popular: true,
-      rating: 4.8,
-      reviews: 1247,
-      colors: ['White', 'Black', 'Navy', 'Gray']
-    },
-    {
-      id: 'hoodie' as ProductType,
-      label: 'Premium Hoodie',
-      description: 'Cozy pullover with front pocket and soft interior',
-      image: '🧥',
-      features: ['Fleece Lined', 'Drawstring Hood', 'Kangaroo Pocket'],
-      popular: false,
-      rating: 4.9,
-      reviews: 892,
-      colors: ['Black', 'Gray', 'Navy', 'Burgundy']
-    },
-    {
-      id: 'sweatshirt' as ProductType,
-      label: 'Cozy Sweatshirt',
-      description: 'Comfortable crew neck sweatshirt for casual wear',
-      image: '🥼',
-      features: ['Soft Cotton Blend', 'Ribbed Cuffs', 'Classic Fit'],
-      popular: false,
-      rating: 4.7,
-      reviews: 634,
-      colors: ['White', 'Gray', 'Black', 'Navy']
-    }
-  ]
-
-  const benefits = [
-    { icon: Star, text: 'Premium Quality Materials', color: 'text-yellow-500' },
-    { icon: Truck, text: 'Free Shipping Worldwide', color: 'text-blue-500' },
-    { icon: Shield, text: '30-Day Money Back Guarantee', color: 'text-green-500' }
-  ]
-
-  const handleProductTypeSelect = (productType: ProductType) => {
-    dispatch({ type: 'SET_PRODUCT_TYPE', payload: productType })
-    router.push('/design')
-  }
 
   useEffect(() => {
     if (!state.category) {
@@ -67,151 +16,99 @@ function ProductTypeSelection() {
     }
   }, [state.category, router])
 
-  if (!state.category) {
-    return null
+  if (!state.category) return null
+
+  // Using high-quality placeholder images of specific garment types
+  const products = [
+    { 
+      id: 'T-Shirt' as ProductType, 
+      label: 'Classic T-Shirt', 
+      description: '100% combed ringspun cotton',
+      imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800'
+    },
+    { 
+      id: 'Hoodie' as ProductType, 
+      label: 'Premium Hoodie', 
+      description: 'Heavyweight fleece blend',
+      imageUrl: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800'
+    },
+    { 
+      id: 'LongSleeve' as ProductType, 
+      label: 'Long Sleeve Tee', 
+      description: 'Breathable mid-weight cotton',
+      imageUrl: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&q=80&w=800'
+    },
+  ]
+
+  const handleProductSelect = (productType: ProductType) => {
+    dispatch({ type: 'SET_PRODUCT_TYPE', payload: productType })
+    router.push('/design')
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-      <NavigationHeader 
-        title="Choose Your Product"
-        subtitle={`Perfect ${state.category}'s apparel for your custom design`}
-        currentStep={2}
-        totalSteps={4}
-      />
+    <div className="min-h-screen bg-[#FAFAFA] font-sans text-gray-900 selection:bg-black selection:text-white">
+      
+      {/* Minimalist Top Nav */}
+      <header className="w-full border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="font-bold text-xl tracking-tighter">MB<span className="text-gray-400">prints</span></div>
+          <div className="flex items-center gap-4">
+             <button 
+                onClick={() => router.push('/')}
+                className="text-sm text-gray-500 hover:text-black transition-colors"
+             >
+                Back
+             </button>
+             <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Step 02 / 04</div>
+          </div>
+        </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Benefits Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-          {benefits.map((benefit, index) => (
-            <div key={index} className="flex items-center justify-center gap-3 p-4 rounded-lg bg-card border">
-              <benefit.icon className={`w-5 h-5 ${benefit.color}`} />
-              <span className="text-sm font-medium text-foreground">{benefit.text}</span>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+        
+        {/* Header Section */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-6">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Select Garment
+          </h1>
+          <p className="text-lg text-gray-500">
+            Choose the specific apparel style you want to customize for the {state.category === 'male' ? "Men's" : state.category === 'female' ? "Women's" : "Youth"} department.
+          </p>
+        </div>
+
+        {/* Visual Product Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {products.map((product) => (
+            <div 
+              key={product.id}
+              onClick={() => handleProductSelect(product.id)}
+              className="group cursor-pointer flex flex-col gap-4"
+            >
+              {/* Image Container with Hover Zoom */}
+              <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-sm border border-gray-200">
+                <img 
+                  src={product.imageUrl} 
+                  alt={product.label}
+                  className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
+              </div>
+              
+              {/* Product Text */}
+              <div className="text-center space-y-1">
+                <h3 className="text-lg font-bold tracking-tight text-gray-900 group-hover:text-black transition-colors">
+                  {product.label}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {product.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {productTypes.map((product, index) => (
-            <Card 
-              key={product.id}
-              className={`group cursor-pointer border-2 transition-all duration-500 hover:border-primary/30 hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden ${
-                product.popular ? 'ring-2 ring-primary/20' : ''
-              }`}
-              style={{
-                animationDelay: `${index * 0.1}s`,
-                animation: 'fadeInUp 0.6s ease-out forwards'
-              }}
-            >
-              {product.popular && (
-                <div className="absolute top-4 right-4 z-10">
-                  <Badge className="bg-primary text-primary-foreground">
-                    <Heart className="w-3 h-3 mr-1" />
-                    Most Popular
-                  </Badge>
-                </div>
-              )}
-
-              <CardContent className="p-8 cursor-pointer" onClick={() => handleProductTypeSelect(product.id)}>
-                <div className="space-y-6">
-                  {/* Product Image & Basic Info */}
-                  <div className="text-center space-y-4">
-                    <div className="text-6xl mx-auto w-fit p-4 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/20 group-hover:scale-110 transition-transform duration-300">
-                      {product.image}
-                    </div>
-                    <div>
-                      <h3 className="font-poppins font-bold text-foreground group-hover:text-primary transition-colors">
-                        {product.label}
-                      </h3>
-                      <p className="text-muted-foreground mt-1">
-                        {product.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Rating & Reviews */}
-                  <div className="flex items-center justify-center gap-4">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating)
-                              ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-muted-foreground/30'
-                          }`}
-                        />
-                      ))}
-                      <span className="text-sm font-medium ml-1">{product.rating}</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      ({product.reviews} reviews)
-                    </span>
-                  </div>
-
-                  {/* Features */}
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-foreground">Features:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {product.features.map((feature) => (
-                        <Badge key={feature} variant="secondary" className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Available Colors */}
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-foreground">Available in:</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {product.colors.join(', ')} + more colors
-                    </p>
-                  </div>
-
-
-                  {/* CTA Button */}
-                  <Button 
-                    className="w-full mt-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 cursor-pointer"
-                    size="lg"
-                  >
-                    Select {product.label}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Bottom Info */}
-        <div className="text-center mt-16 space-y-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            <Badge variant="outline" className="px-4 py-2">
-              🌟 4.9/5 Customer Rating
-            </Badge>
-            <Badge variant="outline" className="px-4 py-2">
-              🚚 Free Shipping on All Orders
-            </Badge>
-            <Badge variant="outline" className="px-4 py-2">
-              🔄 Easy Returns & Exchanges
-            </Badge>
-          </div>
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+      </main>
     </div>
   )
 }
