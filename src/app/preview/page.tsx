@@ -29,13 +29,13 @@ function PreviewPage() {
 
   const getColorData = () => {
     const colors = [
-      { id: 'white', name: 'White', hex: '#FFFFFF', textClass: 'text-gray-900', filter: 'none' },
-      { id: 'black', name: 'Black', hex: '#1A1A1A', textClass: 'text-white', filter: 'grayscale(1) brightness(0.2)' },
-      { id: 'navy', name: 'Navy', hex: '#1E293B', textClass: 'text-white', filter: 'sepia(1) saturate(5) hue-rotate(190deg) brightness(0.4)' },
-      { id: 'gray', name: 'Gray', hex: '#6B7280', textClass: 'text-white', filter: 'grayscale(1) brightness(0.7)' },
-      { id: 'red', name: 'Red', hex: '#EF4444', textClass: 'text-white', filter: 'sepia(1) saturate(7) hue-rotate(-10deg) brightness(0.8)' },
-      { id: 'blue', name: 'Blue', hex: '#3B82F6', textClass: 'text-white', filter: 'sepia(1) saturate(7) hue-rotate(190deg) brightness(0.8)' },
-      { id: 'green', name: 'Green', hex: '#10B981', textClass: 'text-white', filter: 'sepia(1) saturate(5) hue-rotate(110deg) brightness(0.7)' },
+      { id: 'white', name: 'White', hex: '#FFFFFF' },
+      { id: 'black', name: 'Black', hex: '#333333' }, // Softened black for fabric texture
+      { id: 'navy', name: 'Navy', hex: '#1E293B' },
+      { id: 'gray', name: 'Gray', hex: '#9CA3AF' },
+      { id: 'red', name: 'Red', hex: '#EF4444' },
+      { id: 'blue', name: 'Blue', hex: '#3B82F6' },
+      { id: 'green', name: 'Green', hex: '#10B981' },
     ]
     return colors.find(c => c.id === state.color) || colors[0]
   }
@@ -178,27 +178,30 @@ function PreviewPage() {
               </div>
 
               {/* The Mockup Area */}
-              <div className="relative aspect-square bg-[#EDEDED] flex items-center justify-center overflow-hidden touch-none"
+              <div className="relative aspect-[4/5] bg-[#F5F5F5] flex items-center justify-center overflow-hidden touch-none"
                    onMouseMove={handleMouseMove}
                    onMouseUp={handleMouseUp}
                    onMouseLeave={handleMouseUp}
                    onTouchMove={handleTouchMove}
                    onTouchEnd={handleMouseUp}
               >
-                {/* Realistic Shirt Base Layer */}
+                {/* Background Color Layer (Drives the shirt tint) */}
+                <div 
+                  className="absolute inset-0 transition-colors duration-300"
+                  style={{ backgroundColor: selectedColorData.hex }}
+                />
+
+                {/* High-Res Unsplash Shirt Photo with Multiply Blend Mode */}
                 <img 
-                  src="/shirt_mockup_blank.png" 
+                  src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=1000" 
                   alt="Realistic Shirt Mockup"
-                  className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-all duration-300"
-                  style={{
-                    filter: selectedColorData.filter,
-                  }}
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none mix-blend-multiply opacity-90"
                 />
 
                 {/* The Draggable Logo Layer */}
                 {state.design.imageUrl && (
                   <div 
-                    className="absolute cursor-move z-20 mt-[-5%] ml-[-2%]" 
+                    className="absolute cursor-move z-20" 
                     style={{
                       transform: `translate(${position.x}px, ${position.y}px)`,
                     }}
@@ -206,7 +209,7 @@ function PreviewPage() {
                     onTouchStart={handleTouchStart}
                   >
                     <div 
-                      className={`relative border transition-colors ${isDragging ? 'border-gray-900 border-dashed' : 'border-transparent hover:border-dashed hover:border-gray-400'}`}
+                      className={`relative border transition-colors ${isDragging ? 'border-gray-900 border-dashed bg-white/20' : 'border-transparent hover:border-dashed hover:border-gray-400 hover:bg-white/10'}`}
                       style={{ padding: '8px' }}
                     >
                       <img 
@@ -214,7 +217,7 @@ function PreviewPage() {
                         alt="Custom Design"
                         draggable="false" 
                         style={{
-                          width: `${(scale / 100) * 160}px`, // Base width is 160px
+                          width: `${(scale / 100) * 180}px`, // Base width
                           height: 'auto',
                         }}
                         className="object-contain drop-shadow-sm pointer-events-none"
