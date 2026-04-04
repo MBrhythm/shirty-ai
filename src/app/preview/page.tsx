@@ -29,13 +29,13 @@ function PreviewPage() {
 
   const getColorData = () => {
     const colors = [
-      { id: 'white', name: 'White', hex: '#FFFFFF', textClass: 'text-gray-900' },
-      { id: 'black', name: 'Black', hex: '#1A1A1A', textClass: 'text-white' },
-      { id: 'navy', name: 'Navy', hex: '#1E293B', textClass: 'text-white' },
-      { id: 'gray', name: 'Gray', hex: '#6B7280', textClass: 'text-white' },
-      { id: 'red', name: 'Red', hex: '#EF4444', textClass: 'text-white' },
-      { id: 'blue', name: 'Blue', hex: '#3B82F6', textClass: 'text-white' },
-      { id: 'green', name: 'Green', hex: '#10B981', textClass: 'text-white' },
+      { id: 'white', name: 'White', hex: '#FFFFFF', textClass: 'text-gray-900', filter: 'none' },
+      { id: 'black', name: 'Black', hex: '#1A1A1A', textClass: 'text-white', filter: 'grayscale(1) brightness(0.2)' },
+      { id: 'navy', name: 'Navy', hex: '#1E293B', textClass: 'text-white', filter: 'sepia(1) saturate(5) hue-rotate(190deg) brightness(0.4)' },
+      { id: 'gray', name: 'Gray', hex: '#6B7280', textClass: 'text-white', filter: 'grayscale(1) brightness(0.7)' },
+      { id: 'red', name: 'Red', hex: '#EF4444', textClass: 'text-white', filter: 'sepia(1) saturate(7) hue-rotate(-10deg) brightness(0.8)' },
+      { id: 'blue', name: 'Blue', hex: '#3B82F6', textClass: 'text-white', filter: 'sepia(1) saturate(7) hue-rotate(190deg) brightness(0.8)' },
+      { id: 'green', name: 'Green', hex: '#10B981', textClass: 'text-white', filter: 'sepia(1) saturate(5) hue-rotate(110deg) brightness(0.7)' },
     ]
     return colors.find(c => c.id === state.color) || colors[0]
   }
@@ -134,7 +134,7 @@ function PreviewPage() {
     <div className="min-h-screen bg-[#FAFAFA] font-sans text-gray-900 selection:bg-black selection:text-white">
       
       {/* Minimalist Top Nav */}
-      <header className="w-full border-b border-gray-200 bg-white">
+      <header className="w-full border-b border-gray-200 bg-white relative z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="font-bold text-xl tracking-tighter">MB<span className="text-gray-400">prints</span></div>
           <div className="flex items-center gap-4">
@@ -153,7 +153,7 @@ function PreviewPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           
           {/* Left Column - The Canvas Workspace */}
-          <div className="lg:col-span-7 space-y-4">
+          <div className="lg:col-span-7 space-y-4 relative z-10">
             <div className="bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
               {/* Toolbar */}
               <div className="border-b border-gray-100 bg-gray-50/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -178,33 +178,27 @@ function PreviewPage() {
               </div>
 
               {/* The Mockup Area */}
-              <div className="relative aspect-square bg-[#F5F5F5] flex items-center justify-center overflow-hidden touch-none"
+              <div className="relative aspect-square bg-[#EDEDED] flex items-center justify-center overflow-hidden touch-none"
                    onMouseMove={handleMouseMove}
                    onMouseUp={handleMouseUp}
                    onMouseLeave={handleMouseUp}
                    onTouchMove={handleTouchMove}
                    onTouchEnd={handleMouseUp}
               >
-                {/* The Shirt Background Map */}
-                <div 
-                  className="absolute inset-0 m-12 opacity-95 transition-colors duration-300 pointer-events-none"
+                {/* Realistic Shirt Base Layer */}
+                <img 
+                  src="/shirt_mockup_blank.png" 
+                  alt="Realistic Shirt Mockup"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-all duration-300"
                   style={{
-                    backgroundColor: selectedColorData.hex,
-                    maskImage: `url('https://cdn-icons-png.flaticon.com/512/863/863684.png')`,
-                    WebkitMaskImage: `url('https://cdn-icons-png.flaticon.com/512/863/863684.png')`,
-                    maskSize: 'contain',
-                    WebkitMaskSize: 'contain',
-                    maskRepeat: 'no-repeat',
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskPosition: 'center',
-                    WebkitMaskPosition: 'center',
+                    filter: selectedColorData.filter,
                   }}
                 />
 
-                {/* The Draggable Logo */}
+                {/* The Draggable Logo Layer */}
                 {state.design.imageUrl && (
                   <div 
-                    className="absolute z-10 cursor-move"
+                    className="absolute cursor-move z-20 mt-[-5%] ml-[-2%]" 
                     style={{
                       transform: `translate(${position.x}px, ${position.y}px)`,
                     }}
@@ -212,7 +206,7 @@ function PreviewPage() {
                     onTouchStart={handleTouchStart}
                   >
                     <div 
-                      className={`relative border border-dashed transition-colors ${isDragging ? 'border-gray-900' : 'border-transparent hover:border-gray-400'}`}
+                      className={`relative border transition-colors ${isDragging ? 'border-gray-900 border-dashed' : 'border-transparent hover:border-dashed hover:border-gray-400'}`}
                       style={{ padding: '8px' }}
                     >
                       <img 
@@ -220,7 +214,7 @@ function PreviewPage() {
                         alt="Custom Design"
                         draggable="false" 
                         style={{
-                          width: `${(scale / 100) * 160}px`,
+                          width: `${(scale / 100) * 160}px`, // Base width is 160px
                           height: 'auto',
                         }}
                         className="object-contain drop-shadow-sm pointer-events-none"
@@ -229,7 +223,7 @@ function PreviewPage() {
                   </div>
                 )}
                 
-                <Badge className="absolute top-6 left-6 bg-white text-black border-gray-200 shadow-sm rounded-sm font-medium tracking-wide">
+                <Badge className="absolute top-6 left-6 bg-white text-black border-gray-200 shadow-sm rounded-sm font-medium tracking-wide z-30">
                   {state.productType}
                 </Badge>
               </div>
@@ -237,7 +231,7 @@ function PreviewPage() {
           </div>
 
           {/* Right Column - Formal Quote Request */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-6 relative z-10">
             <Card className="border border-gray-200 shadow-sm rounded-sm">
               <CardHeader className="bg-white border-b border-gray-100 pb-6">
                 <CardTitle className="text-xl font-bold tracking-tight">Request Formal Quote</CardTitle>
@@ -263,11 +257,11 @@ function PreviewPage() {
                       <Mail size={14} /> Email Address
                     </label>
                     <Input 
-                      type="email" 
-                      placeholder="contact@company.com" 
-                      value={customerEmail}
-                      onChange={(e) => setCustomerEmail(e.target.value)}
-                      className="rounded-sm border-gray-300 focus-visible:ring-black h-11"
+                        type="email" 
+                        placeholder="contact@company.com" 
+                        value={customerEmail}
+                        onChange={(e) => setCustomerEmail(e.target.value)}
+                        className="rounded-sm border-gray-300 focus-visible:ring-black h-11"
                     />
                   </div>
 
