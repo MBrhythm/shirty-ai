@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useApp } from '@/context/AppContext'
 import { Send, CheckCircle2, RefreshCw, Palette, User, Mail, Hash, Move, Maximize, Zap, Award, Globe } from 'lucide-react'
@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { NavigationHeader } from '@/components/navigation-header'
 import { Separator } from '@/components/ui/separator'
 
 function PreviewPage() {
@@ -26,7 +25,7 @@ function PreviewPage() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const [scale, setScale] = useState(100) // 100% default scale
+  const [scale, setScale] = useState(100) 
 
   const getColorData = () => {
     const colors = [
@@ -37,19 +36,11 @@ function PreviewPage() {
       { id: 'red', name: 'Red', hex: '#EF4444', textClass: 'text-white' },
       { id: 'blue', name: 'Blue', hex: '#3B82F6', textClass: 'text-white' },
       { id: 'green', name: 'Green', hex: '#10B981', textClass: 'text-white' },
-      { id: 'purple', name: 'Purple', hex: '#8B5CF6', textClass: 'text-white' },
-      { id: 'yellow', name: 'Yellow', hex: '#FBBF24', textClass: 'text-gray-900' },
-      { id: 'orange', name: 'Orange', hex: '#F97316', textClass: 'text-white' },
-      { id: 'pink', name: 'Pink', hex: '#EC4899', textClass: 'text-white' },
-      { id: 'brown', name: 'Brown', hex: '#78350F', textClass: 'text-white' },
-      { id: 'maroon', name: 'Maroon', hex: '#7F1D1D', textClass: 'text-white' },
-      { id: 'forest', name: 'Forest', hex: '#064E3B', textClass: 'text-white' },
-      { id: 'teal', name: 'Teal', hex: '#14B8A6', textClass: 'text-white' },
     ]
     return colors.find(c => c.id === state.color) || colors[0]
   }
 
-  // Drag Handlers for Desktop (Mouse)
+  // Drag Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true)
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
@@ -60,14 +51,12 @@ function PreviewPage() {
   }
   const handleMouseUp = () => setIsDragging(false)
 
-  // Drag Handlers for Mobile (Touch)
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true)
     setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y })
   }
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return
-    // Prevent scrolling while dragging the logo
     if (e.cancelable) e.preventDefault() 
     setPosition({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y })
   }
@@ -113,8 +102,8 @@ function PreviewPage() {
 
   // Sleek Success Screen
   const SuccessScreen = () => (
-    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-      <div className="max-w-md mx-auto text-center space-y-8 p-8 bg-white border border-gray-200 shadow-sm rounded-md">
+    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center font-sans">
+      <div className="max-w-md mx-auto text-center space-y-8 p-8 bg-white border border-gray-200 shadow-sm rounded-sm">
         <div className="space-y-6">
           <CheckCircle2 className="w-16 h-16 text-black mx-auto" />
           <div className="space-y-2">
@@ -123,7 +112,7 @@ function PreviewPage() {
               Thank you, {customerName}. We are reviewing your design specifications and will send a formal quote to <strong>{customerEmail}</strong> shortly.
             </p>
           </div>
-          <div className="bg-gray-50 rounded-md p-6 border text-left space-y-3">
+          <div className="bg-gray-50 rounded-sm p-6 border text-left space-y-3">
             <h4 className="font-semibold text-xs tracking-wider uppercase text-gray-500">Order Specification</h4>
             <div className="space-y-1">
               <p className="text-sm text-gray-900"><span className="text-gray-500">Product:</span> {state.productType}</p>
@@ -142,15 +131,25 @@ function PreviewPage() {
   if (showSuccessScreen) return <SuccessScreen />
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] font-sans text-gray-900">
-      <NavigationHeader 
-        title="Finalize Artwork"
-        subtitle="Position your design and submit for a professional review."
-        currentStep={4}
-        totalSteps={4}
-      />
+    <div className="min-h-screen bg-[#FAFAFA] font-sans text-gray-900 selection:bg-black selection:text-white">
+      
+      {/* Minimalist Top Nav */}
+      <header className="w-full border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="font-bold text-xl tracking-tighter">MB<span className="text-gray-400">prints</span></div>
+          <div className="flex items-center gap-4">
+             <button 
+                onClick={() => router.push('/design')}
+                className="text-sm text-gray-500 hover:text-black transition-colors"
+             >
+                Back
+             </button>
+             <div className="text-xs font-semibold uppercase tracking-widest text-gray-400">Step 04 / 04</div>
+          </div>
+        </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           
           {/* Left Column - The Canvas Workspace */}
@@ -186,8 +185,7 @@ function PreviewPage() {
                    onTouchMove={handleTouchMove}
                    onTouchEnd={handleMouseUp}
               >
-                
-                {/* The Shirt Background */}
+                {/* The Shirt Background Map */}
                 <div 
                   className="absolute inset-0 m-12 opacity-95 transition-colors duration-300 pointer-events-none"
                   style={{
@@ -220,9 +218,9 @@ function PreviewPage() {
                       <img 
                         src={state.design.imageUrl} 
                         alt="Custom Design"
-                        draggable="false" // Prevent default browser image drag
+                        draggable="false" 
                         style={{
-                          width: `${(scale / 100) * 160}px`, // Base width is 160px
+                          width: `${(scale / 100) * 160}px`,
                           height: 'auto',
                         }}
                         className="object-contain drop-shadow-sm pointer-events-none"
