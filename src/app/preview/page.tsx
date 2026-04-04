@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useApp } from '@/context/AppContext'
-import { Send, CheckCircle2, RefreshCw, Palette, User, Mail, Hash, Move, Maximize, Zap, Award, Globe } from 'lucide-react'
+import { Send, CheckCircle2, RefreshCw, Palette, User, Mail, Hash, Move, Maximize, Zap, Award, Globe, Wand2, Sparkles, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +16,10 @@ function PreviewPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccessScreen, setShowSuccessScreen] = useState(false)
   
+  // Magic Tools State (For UI Demonstration)
+  const [isRemovingBg, setIsRemovingBg] = useState(false)
+  const [isEnhancing, setIsEnhancing] = useState(false)
+
   // Lead Capture State
   const [customerName, setCustomerName] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
@@ -30,7 +34,7 @@ function PreviewPage() {
   const getColorData = () => {
     const colors = [
       { id: 'white', name: 'White', hex: '#FFFFFF' },
-      { id: 'black', name: 'Black', hex: '#333333' }, // Softened black for fabric texture
+      { id: 'black', name: 'Black', hex: '#333333' }, 
       { id: 'navy', name: 'Navy', hex: '#1E293B' },
       { id: 'gray', name: 'Gray', hex: '#9CA3AF' },
       { id: 'red', name: 'Red', hex: '#EF4444' },
@@ -61,22 +65,29 @@ function PreviewPage() {
     setPosition({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y })
   }
 
+  // Simulated Magic Tools
+  const simulateBgRemoval = () => {
+    setIsRemovingBg(true)
+    setTimeout(() => {
+      setIsRemovingBg(false)
+      alert("Backend connection pending: This will send the image to an AI API to instantly strip the white background!")
+    }, 2000)
+  }
+
+  const simulateEnhance = () => {
+    setIsEnhancing(true)
+    setTimeout(() => {
+      setIsEnhancing(false)
+      alert("Backend connection pending: This will use an AI upscaler to convert a low-res logo into a crisp print-ready file!")
+    }, 2000)
+  }
+
   const handleRequestQuote = async () => {
     if (!customerName || !customerEmail) {
       alert("Please enter your name and email so we can send your quote.")
       return
     }
     setIsSubmitting(true)
-    
-    console.log("New MBprints Quote Request:", {
-      customer: customerName,
-      email: customerEmail,
-      qty: quantity,
-      design: state.design?.imageUrl,
-      specs: `${state.color} ${state.productType}`,
-      canvasData: { position, scale }
-    })
-
     setTimeout(() => {
       setShowSuccessScreen(true)
       setIsSubmitting(false)
@@ -100,7 +111,6 @@ function PreviewPage() {
 
   const selectedColorData = getColorData()
 
-  // Sleek Success Screen
   const SuccessScreen = () => (
     <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center font-sans">
       <div className="max-w-md mx-auto text-center space-y-8 p-8 bg-white border border-gray-200 shadow-sm rounded-sm">
@@ -111,14 +121,6 @@ function PreviewPage() {
             <p className="text-sm text-gray-500 leading-relaxed">
               Thank you, {customerName}. We are reviewing your design specifications and will send a formal quote to <strong>{customerEmail}</strong> shortly.
             </p>
-          </div>
-          <div className="bg-gray-50 rounded-sm p-6 border text-left space-y-3">
-            <h4 className="font-semibold text-xs tracking-wider uppercase text-gray-500">Order Specification</h4>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-900"><span className="text-gray-500">Product:</span> {state.productType}</p>
-              <p className="text-sm text-gray-900"><span className="text-gray-500">Color:</span> {selectedColorData?.name}</p>
-              <p className="text-sm text-gray-900"><span className="text-gray-500">Volume:</span> {quantity} units</p>
-            </div>
           </div>
           <Button onClick={handleNewDesign} size="lg" className="w-full h-12 rounded-none bg-black hover:bg-gray-800 text-white transition-colors">
             Start New Project
@@ -133,11 +135,14 @@ function PreviewPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] font-sans text-gray-900 selection:bg-black selection:text-white">
       
-      {/* Minimalist Top Nav */}
+      {/* Minimalist Top Nav with Credit Counter */}
       <header className="w-full border-b border-gray-200 bg-white relative z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="font-bold text-xl tracking-tighter">MB<span className="text-gray-400">prints</span></div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+             <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-200 hidden sm:flex">
+                <Sparkles size={12} className="mr-1" /> 3 AI Credits Left
+             </Badge>
              <button 
                 onClick={() => router.push('/design')}
                 className="text-sm text-gray-500 hover:text-black transition-colors"
@@ -155,15 +160,15 @@ function PreviewPage() {
           {/* Left Column - The Canvas Workspace */}
           <div className="lg:col-span-7 space-y-4 relative z-10">
             <div className="bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
-              {/* Toolbar */}
-              <div className="border-b border-gray-100 bg-gray-50/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              
+              {/* Primary Toolbar (Scale & Position) */}
+              <div className="border-b border-gray-100 bg-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <Move size={16} className="text-gray-400" />
                   <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">Position Artwork</span>
                 </div>
                 
-                {/* Scale Slider */}
-                <div className="flex items-center gap-3 bg-white px-3 py-2 border border-gray-200 rounded-sm">
+                <div className="flex items-center gap-3 bg-gray-50 px-3 py-2 border border-gray-200 rounded-sm">
                   <Maximize size={14} className="text-gray-400" />
                   <span className="text-xs font-medium text-gray-600 w-16">Size: {scale}%</span>
                   <input 
@@ -172,9 +177,34 @@ function PreviewPage() {
                     max="200" 
                     value={scale} 
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="w-24 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
+                    className="w-24 h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-black"
                   />
                 </div>
+              </div>
+
+              {/* Secondary Toolbar (Magic AI Tools) */}
+              <div className="border-b border-gray-100 bg-gray-50 p-3 flex flex-wrap items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-2">Magic Tools:</span>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={simulateBgRemoval}
+                  disabled={isRemovingBg}
+                  className="h-8 text-xs border-gray-200 hover:border-gray-400 bg-white"
+                >
+                  {isRemovingBg ? <Loader2 size={14} className="animate-spin mr-1.5" /> : <Wand2 size={14} className="mr-1.5 text-blue-500" />}
+                  Remove Background
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={simulateEnhance}
+                  disabled={isEnhancing}
+                  className="h-8 text-xs border-gray-200 hover:border-gray-400 bg-white"
+                >
+                  {isEnhancing ? <Loader2 size={14} className="animate-spin mr-1.5" /> : <Sparkles size={14} className="mr-1.5 text-amber-500" />}
+                  Enhance Quality
+                </Button>
               </div>
 
               {/* The Mockup Area */}
@@ -217,7 +247,7 @@ function PreviewPage() {
                         alt="Custom Design"
                         draggable="false" 
                         style={{
-                          width: `${(scale / 100) * 180}px`, // Base width
+                          width: `${(scale / 100) * 180}px`,
                           height: 'auto',
                         }}
                         className="object-contain drop-shadow-sm pointer-events-none"
@@ -309,21 +339,6 @@ function PreviewPage() {
               </CardContent>
             </Card>
 
-            {/* Professional Trust Indicators */}
-            <div className="grid grid-cols-3 gap-2 pt-2">
-               <div className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-sm">
-                 <Zap className="w-5 h-5 text-gray-900 mb-2" />
-                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center">Fast Turnaround</span>
-               </div>
-               <div className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-sm">
-                 <Award className="w-5 h-5 text-gray-900 mb-2" />
-                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center">Premium Quality</span>
-               </div>
-               <div className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-sm">
-                 <Globe className="w-5 h-5 text-gray-900 mb-2" />
-                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center">Nationwide</span>
-               </div>
-            </div>
           </div>
         </div>
       </div>
